@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>console management</title>
+
+
+<link rel="stylesheet" href="jquery-ui/ui-lightness/jquery-ui-1.10.4.min.css">
+<script src="jquery-1.7.2.min.js"></script>
+<script src="jquery-ui/jquery-ui-1.10.4.min.js"></script>
+
+
+
+<style type="text/css">
+	/* #top_div {left:1.5%;right:2.6%;top:1%;height:8%;position: absolute;border: 1px solid #E6EEF8} */
+	#left_div {margin:1%;top:1px;width:15%;height:93%;position: absolute;border: 1px solid #E6EEF8;background-color: #eee}
+    #right_div {margin:1%;margin-left:0.1%;top:1px;width:80%;height:93%;position: absolute;border: 1px solid #E6EEF8;left:17%;}
+	#bottom_div{bottom: 1%;position:absolute;left:30%;}	
+	.left_menu_div {overflow: auto;}
+	#tabs { margin-top: 0.1em; }
+    #tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+</style>
+
+
+
+</head>
+<body>
+
+
+
+<!-- left menu -->
+<div id="left_div" class="ui-corner-all">
+	<hr>
+	<div id="left_menu">
+	
+		<h3>common menu</h3>
+		<div class="left_menu_div">
+			<a href="http://www.baidu.com" class="mybutton" tabTitle="baidu" >baidu</a>
+			<a href="http://www.sina.com" class="mybutton" tabTitle="sina" >sina</a>
+		</div>
+		
+		<h3>other menu</h3>
+		<div class="left_menu_div">
+			<a href="http://haomee.net" class="mybutton" tabTitle="haomee" >haomee</a>
+			<a href="http://qq.com" class="mybutton" tabTitle="qq" >qq</a>
+		</div>
+		
+		
+		
+		
+	</div>
+</div>
+
+<div id="right_div" class="ui-corner-all">
+	<div id="tabs">
+		<ul></ul>
+	</div>
+</div>
+
+<div id="bottom_div" class=" ui-widget ui-corner-all" style="text-align: center;">
+</div>
+
+
+
+
+
+<script type="text/javascript">
+	$(function(){
+		var icons = {
+			      header: "ui-icon-circle-arrow-e",
+			      activeHeader: "ui-icon-circle-arrow-s"
+			    };
+				
+			    $( "#left_menu" ).accordion({
+			      icons: icons,
+			      collapsible: true,
+			      heightStyle: "content"
+			    }).css('font-size','14px');
+			    
+			    $('.mybutton').button()
+			    			  .css('width','95%')
+			    			  .css('margin-bottom','4px')
+			    			  .click(function(event){
+			    						//alert($(this).attr('href'));
+			    						var url = $(this).attr('href');
+			    						var tabTitle = $(this).attr('tabTitle');
+			    						//var num = $(this).attr('num');
+			    						addTab(tabTitle,url);
+			    						event.preventDefault();
+			    					});
+			    var tabs = $('#tabs').tabs({
+			    	//collapsible: true,
+			    	heightStyle: "fill"
+			    }).css('font-size','14px');
+			    
+			    tabs.delegate( "span.ui-icon-close", "click", function() {
+			        var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+			        $( "#" + panelId ).remove();
+			        tabs.tabs( "refresh" );
+			      });
+			    
+			    var 
+			      tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
+			      tabCounter = 1;
+			      
+			    function addTab(tabTitle,url){
+			    	var flag = existTab(url);
+			    	if(! flag){
+			    		 var label = tabTitle,
+				         id = "tabs-" + tabCounter,
+				         li = $( tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ) );
+				  //alert(li);
+				       tabs.find( ".ui-tabs-nav" ).append( li );
+				       tabs.append( "<iframe scrolling='auto' frameborder='0' style=\"width:97%;height:100%;background:#eee;\" id='" + id + "' src = '"+url+"'></iframe>" );
+				       tabs.tabs( "refresh" );
+				     //  tabs.tabs("option", "active", num);
+				     $('a',li).trigger('click');
+				       tabCounter++;
+			    	}
+			    }
+			    
+			    function existTab(url){
+			    	var tab_iframe = $("iframe[src='"+url+"']");
+			    	var id = tab_iframe.attr('id');
+			    	if(id && id.length>0){
+			    		$("a[href='#"+id+"']",$('#tabs')).trigger('click');
+			    		return true;
+			    	}else{
+			    		return false;
+			    	}
+			    }
+			    
+			    $('#logout_a').button().css('font-size','12px').click(function(){
+			    	if(! confirm('really logout ？')){
+			    		return false;
+			    	}
+			    });
+	});
+</script>
+</body>
+</html>
